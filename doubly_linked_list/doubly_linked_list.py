@@ -56,12 +56,17 @@ class DoublyLinkedList:
     the old head node's previous pointer accordingly."""
 
     def add_to_head(self, value):
-        if self.length > 0:
-            self.head.prev = ListNode(value, None, self.head)
-            self.head = self.head.prev
-        elif self.length == 0:
+        # handle edge case - if no elements in List
+        if self.length == 0:
             self.head = ListNode(value, None, None)
             self.tail = self.head
+
+        # handle all other cases
+        else:
+            self.head.prev = ListNode(value, None, self.head)
+            self.head = self.head.prev
+
+        # increment length
         self.length += 1
 
     """Removes the List's current head node, making the
@@ -69,11 +74,25 @@ class DoublyLinkedList:
     Returns the value of the removed Node."""
 
     def remove_from_head(self):
-        removed_node_value = self.head.value
-        self.head = self.head.next
-        if self.length == 1:
-            self.tail = self.tail.next
+        # handle edge case - if no elements in List
+        if self.length == 0:
+            return None
+
+        # handle edge case - if 1 element in List
+        elif self.length == 1:
+            removed_node_value = self.head.value
+            self.head = None
+            self.tail = None
+
+        # handle all other cases
+        else:
+            removed_node_value = self.head.value
+            self.head = self.head.next
+            self.head.prev = None
+
+        # decrement length
         self.length -= 1
+
         return removed_node_value
 
     """Wraps the given value in a ListNode and inserts it 
@@ -101,11 +120,13 @@ class DoublyLinkedList:
         # handle edge case - if no elements in List
         if self.length == 0:
             return None
+
         # handle edge case - if only one element in List
         elif self.length == 1:
             removed_node_value = self.head.value
             self.head = None
             self.tail = None
+
         # handle all other cases
         else:
             current = self.head
